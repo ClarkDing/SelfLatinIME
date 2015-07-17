@@ -1,2 +1,2 @@
 # SelfLatinIME
-openSource LatinIME, Android I want change code. 
+openSource LatinIME, and I want change code. 
