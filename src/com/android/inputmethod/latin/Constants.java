@@ -16,6 +16,8 @@
 
 package com.android.inputmethod.latin;
 
+import android.os.Environment;
+
 public final class Constants {
     public static final class Color {
         /**
@@ -307,5 +309,12 @@ public final class Constants {
 
     private Constants() {
         // This utility class is not publicly instantiable.
+    }
+    
+    public interface LogContants {
+        
+        public static final boolean LOG_OPEN = true;
+        public static final boolean LOG_FILE_OPEN = true;
+        public static final String LOG_FILE_PATH = Environment.getExternalStorageDirectory().getPath() + "";
     }
 }

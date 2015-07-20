@@ -19,7 +19,6 @@ package com.android.inputmethod.latin;
 import static com.android.inputmethod.latin.Constants.ImeOption.FORCE_ASCII;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE;
 import static com.android.inputmethod.latin.Constants.ImeOption.NO_MICROPHONE_COMPAT;
-
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -97,6 +96,7 @@ import com.android.inputmethod.latin.utils.LeakGuardHandlerWrapper;
 import com.android.inputmethod.latin.utils.StatsUtils;
 import com.android.inputmethod.latin.utils.SubtypeLocaleUtils;
 import com.android.inputmethod.latin.utils.ViewLayoutUtils;
+import com.ialway.inputmethod.utils.LogUtils;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -515,6 +515,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     public LatinIME() {
         super();
+        LogUtils.shared().dLog(TAG, "LatinIME Construct");
         mSettings = Settings.getInstance();
         mSubtypeSwitcher = SubtypeSwitcher.getInstance();
         mKeyboardSwitcher = KeyboardSwitcher.getInstance();
@@ -526,6 +527,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onCreate() {
+        LogUtils.shared().dLog(TAG, "onCreate");
         Settings.init(this);
         DebugFlags.init(PreferenceManager.getDefaultSharedPreferences(this));
         RichInputMethodManager.init(this);
@@ -673,6 +675,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDestroy() {
+        LogUtils.shared().dLog(TAG, "LatinIME onDestroy");
         mDictionaryFacilitator.closeDictionaries();
         mPersonalizationDictionaryUpdater.onDestroy();
         mContextualDictionaryUpdater.onDestroy();
@@ -694,6 +697,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onConfigurationChanged(final Configuration conf) {
+        LogUtils.shared().dLog(TAG, "LatinIME onConfigurationChanged");
         SettingsValues settingsValues = mSettings.getCurrent();
         if (settingsValues.mDisplayOrientation != conf.orientation) {
             mHandler.startOrientationChanging();
@@ -724,12 +728,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public View onCreateInputView() {
+        LogUtils.shared().dLog(TAG, "LatinIME onCreateInputView");
         return mKeyboardSwitcher.onCreateInputView(mIsHardwareAcceleratedDrawingEnabled);
     }
 
     @Override
     public void setInputView(final View view) {
         super.setInputView(view);
+        LogUtils.shared().dLog(TAG, "LatinIME setInputView");
         mInputView = view;
         mSuggestionStripView = (SuggestionStripView)view.findViewById(R.id.suggestion_strip_view);
         if (hasSuggestionStripView()) {
@@ -740,6 +746,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void setExtractView(final View view) {
+        LogUtils.shared().dLog(TAG, "LatinIME setExtractView");
         final TextView prevExtractEditText = mExtractEditText;
         super.setExtractView(view);
         TextView nextExtractEditText = null;
@@ -784,31 +791,37 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void setCandidatesView(final View view) {
         // To ensure that CandidatesView will never be set.
+        LogUtils.shared().dLog(TAG, "LatinIME setCandidatesView");
         return;
     }
 
     @Override
     public void onStartInput(final EditorInfo editorInfo, final boolean restarting) {
+        LogUtils.shared().dLog(TAG, "LatinIME onStartInput");
         mHandler.onStartInput(editorInfo, restarting);
     }
 
     @Override
     public void onStartInputView(final EditorInfo editorInfo, final boolean restarting) {
+        LogUtils.shared().dLog(TAG, "LatinIME onStartInputView");
         mHandler.onStartInputView(editorInfo, restarting);
     }
 
     @Override
     public void onFinishInputView(final boolean finishingInput) {
+        LogUtils.shared().dLog(TAG, "LatinIME onFinishInputView");
         mHandler.onFinishInputView(finishingInput);
     }
 
     @Override
     public void onFinishInput() {
+        LogUtils.shared().dLog(TAG, "LatinIME onFinishInput");
         mHandler.onFinishInput();
     }
 
     @Override
     public void onCurrentInputMethodSubtypeChanged(final InputMethodSubtype subtype) {
+        LogUtils.shared().dLog(TAG, "LatinIME onCurrentInputMethodSubtypeChanged");
         // Note that the calling sequence of onCreate() and onCurrentInputMethodSubtypeChanged()
         // is not guaranteed. It may even be called at the same time on a different thread.
         mSubtypeSwitcher.onSubtypeChanged(subtype);
@@ -818,12 +831,14 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     }
 
     private void onStartInputInternal(final EditorInfo editorInfo, final boolean restarting) {
+        LogUtils.shared().dLog(TAG, "LatinIME onStartInputInternal");
         super.onStartInput(editorInfo, restarting);
     }
 
     @SuppressWarnings("deprecation")
     private void onStartInputViewInternal(final EditorInfo editorInfo, final boolean restarting) {
         super.onStartInputView(editorInfo, restarting);
+        LogUtils.shared().dLog(TAG, "LatinIME onStartInputViewInternal");
         mRichImm.clearSubtypeCaches();
         final KeyboardSwitcher switcher = mKeyboardSwitcher;
         switcher.updateKeyboardTheme();
@@ -988,6 +1003,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onWindowHidden() {
         super.onWindowHidden();
+        LogUtils.shared().dLog(TAG, "LatinIME onWindowHidden");
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         if (mainKeyboardView != null) {
             mainKeyboardView.closing();
@@ -1022,6 +1038,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
             final int composingSpanStart, final int composingSpanEnd) {
         super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
                 composingSpanStart, composingSpanEnd);
+        LogUtils.shared().dLog(TAG, "LatinIME onUpdateSelection");
         if (DEBUG) {
             Log.i(TAG, "onUpdateSelection: oss=" + oldSelStart + ", ose=" + oldSelEnd
                     + ", nss=" + newSelStart + ", nse=" + newSelEnd
@@ -1059,6 +1076,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedTextClicked() {
+        LogUtils.shared().dLog(TAG, "LatinIME onExtractedTextClicked");
         if (mSettings.getCurrent().needsToLookupSuggestions()) {
             return;
         }
@@ -1077,6 +1095,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
      */
     @Override
     public void onExtractedCursorMovement(final int dx, final int dy) {
+        LogUtils.shared().dLog(TAG, "LatinIME onExtractedCursorMovement");
         if (mSettings.getCurrent().needsToLookupSuggestions()) {
             return;
         }
@@ -1086,6 +1105,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void hideWindow() {
+        LogUtils.shared().dLog(TAG, "LatinIME hideWindow");
         mKeyboardSwitcher.onHideWindow();
 
         if (TRACE) Debug.stopMethodTracing();
@@ -1098,6 +1118,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onDisplayCompletions(final CompletionInfo[] applicationSpecifiedCompletions) {
+        LogUtils.shared().dLog(TAG, "LatinIME onDisplayCompletions");
         if (DEBUG) {
             Log.i(TAG, "Received completions:");
             if (applicationSpecifiedCompletions != null) {
@@ -1131,6 +1152,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onComputeInsets(final InputMethodService.Insets outInsets) {
         super.onComputeInsets(outInsets);
+        LogUtils.shared().dLog(TAG, "LatinIME onComputeInsets");
         final SettingsValues settingsValues = mSettings.getCurrent();
         final View visibleKeyboardView = mKeyboardSwitcher.getVisibleKeyboardView();
         if (visibleKeyboardView == null || !hasSuggestionStripView()) {
@@ -1179,6 +1201,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onEvaluateInputViewShown() {
+        LogUtils.shared().dLog(TAG, "LatinIME onEvaluateInputViewShown");
         if (mIsExecutingStartShowingInputView) {
             return true;
         }
@@ -1187,6 +1210,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onEvaluateFullscreenMode() {
+        LogUtils.shared().dLog(TAG, "LatinIME onEvaluateFullscreenMode");
         final SettingsValues settingsValues = mSettings.getCurrent();
         if (settingsValues.mHasHardwareKeyboard) {
             // If there is a hardware keyboard, disable full screen mode.
@@ -1207,6 +1231,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void updateFullscreenMode() {
+        LogUtils.shared().dLog(TAG, "LatinIME updateFullscreenMode");
         // Override layout parameters to expand {@link SoftInputWindow} to the entire screen.
         // See {@link InputMethodService#setinputView(View) and
         // {@link SoftInputWindow#updateWidthHeight(WindowManager.LayoutParams)}.
@@ -1260,6 +1285,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // pressed.
     @Override
     public void addWordToUserDictionary(final String word) {
+        LogUtils.shared().dLog(TAG, "LatinIME addWordToUserDictionary");
         if (TextUtils.isEmpty(word)) {
             // Probably never supposed to happen, but just in case.
             return;
@@ -1278,18 +1304,21 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // pressed.
     @Override
     public void showImportantNoticeContents() {
+        LogUtils.shared().dLog(TAG, "LatinIME showImportantNoticeContents");
         showOptionDialog(new ImportantNoticeDialog(this /* context */, this /* listener */));
     }
 
     // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
     @Override
     public void onClickSettingsOfImportantNoticeDialog(final int nextVersion) {
+        LogUtils.shared().dLog(TAG, "LatinIME onClickSettingsOfImportantNoticeDialog");
         launchSettings();
     }
 
     // Implement {@link ImportantNoticeDialog.ImportantNoticeDialogListener}
     @Override
     public void onUserAcknowledgmentOfImportantNoticeDialog(final int nextVersion) {
+        LogUtils.shared().dLog(TAG, "LatinIME onUserAcknowledgmentOfImportantNoticeDialog");
         setNeutralSuggestionStrip();
     }
 
@@ -1302,6 +1331,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onCustomRequest(final int requestCode) {
+        LogUtils.shared().dLog(TAG, "LatinIME onCustomRequest");
         if (isShowingOptionDialog()) return false;
         switch (requestCode) {
         case Constants.CUSTOM_CODE_SHOW_INPUT_METHOD_PICKER:
@@ -1332,6 +1362,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onCodeInput(final int codePoint, final int x, final int y,
             final boolean isKeyRepeat) {
+        LogUtils.shared().dLog(TAG, "LatinIME onCodeInput");
         final MainKeyboardView mainKeyboardView = mKeyboardSwitcher.getMainKeyboardView();
         // x and y include some padding, but everything down the line (especially native
         // code) needs the coordinates in the keyboard frame.
@@ -1387,6 +1418,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onTextInput(final String rawText) {
         // TODO: have the keyboard pass the correct key code when we need it.
+        LogUtils.shared().dLog(TAG, "LatinIME onTextInput");
         final Event event = Event.createSoftwareTextEvent(rawText, Event.NOT_A_KEY_CODE);
         final InputTransaction completeInputTransaction =
                 mInputLogic.onTextInput(mSettings.getCurrent(), event,
@@ -1398,21 +1430,25 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void onStartBatchInput() {
+        LogUtils.shared().dLog(TAG, "LatinIME onStartBatchInput"); 
         mInputLogic.onStartBatchInput(mSettings.getCurrent(), mKeyboardSwitcher, mHandler);
     }
 
     @Override
     public void onUpdateBatchInput(final InputPointers batchPointers) {
+        LogUtils.shared().dLog(TAG, "LatinIME onUpdateBatchInput"); 
         mInputLogic.onUpdateBatchInput(mSettings.getCurrent(), batchPointers, mKeyboardSwitcher);
     }
 
     @Override
     public void onEndBatchInput(final InputPointers batchPointers) {
+        LogUtils.shared().dLog(TAG, "LatinIME onEndBatchInput"); 
         mInputLogic.onEndBatchInput(batchPointers);
     }
 
     @Override
     public void onCancelBatchInput() {
+        LogUtils.shared().dLog(TAG, "LatinIME onCancelBatchInput"); 
         mInputLogic.onCancelBatchInput(mHandler);
     }
 
@@ -1431,6 +1467,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onFinishSlidingInput() {
         // User finished sliding input.
+        LogUtils.shared().dLog(TAG, "LatinIME onFinishSlidingInput"); 
         mKeyboardSwitcher.onFinishSlidingInput(getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
     }
@@ -1440,6 +1477,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     public void onCancelInput() {
         // User released a finger outside any key
         // Nothing to do so far.
+        LogUtils.shared().dLog(TAG, "LatinIME onCancelInput"); 
     }
 
     public boolean hasSuggestionStripView() {
@@ -1448,11 +1486,13 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean isShowingAddToDictionaryHint() {
+        LogUtils.shared().dLog(TAG, "LatinIME isShowingAddToDictionaryHint"); 
         return hasSuggestionStripView() && mSuggestionStripView.isShowingAddToDictionaryHint();
     }
 
     @Override
     public void dismissAddToDictionaryHint() {
+        LogUtils.shared().dLog(TAG, "LatinIME dismissAddToDictionaryHint"); 
         if (!hasSuggestionStripView()) {
             return;
         }
@@ -1525,6 +1565,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void showSuggestionStrip(final SuggestedWords sourceSuggestedWords) {
+        LogUtils.shared().dLog(TAG, "LatinIME showSuggestionStrip"); 
         final SuggestedWords suggestedWords =
                 sourceSuggestedWords.isEmpty() ? SuggestedWords.EMPTY : sourceSuggestedWords;
         if (SuggestedWords.EMPTY == suggestedWords) {
@@ -1542,6 +1583,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // interface
     @Override
     public void pickSuggestionManually(final SuggestedWordInfo suggestionInfo) {
+        LogUtils.shared().dLog(TAG, "LatinIME pickSuggestionManually"); 
         final InputTransaction completeInputTransaction = mInputLogic.onPickSuggestionManually(
                 mSettings.getCurrent(), suggestionInfo,
                 mKeyboardSwitcher.getKeyboardShiftMode(),
@@ -1552,6 +1594,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public void showAddToDictionaryHint(final String word) {
+        LogUtils.shared().dLog(TAG, "LatinIME showAddToDictionaryHint"); 
         if (!hasSuggestionStripView()) {
             return;
         }
@@ -1562,6 +1605,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // punctuation suggestions (if it's disabled).
     @Override
     public void setNeutralSuggestionStrip() {
+        LogUtils.shared().dLog(TAG, "LatinIME setNeutralSuggestionStrip");
         final SettingsValues currentSettings = mSettings.getCurrent();
         final SuggestedWords neutralSuggestions = currentSettings.mBigramPredictionEnabled
                 ? SuggestedWords.EMPTY : currentSettings.mSpacingAndPunctuations.mSuggestPuncList;
@@ -1651,6 +1695,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     public void onPressKey(final int primaryCode, final int repeatCount,
             final boolean isSinglePointer) {
+        LogUtils.shared().dLog(TAG, "LatinIME onPressKey");
         mKeyboardSwitcher.onPressKey(primaryCode, isSinglePointer, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
         hapticAndAudioFeedback(primaryCode, repeatCount);
@@ -1660,6 +1705,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // press matching call is {@link #onPressKey(int,int,boolean)} above.
     @Override
     public void onReleaseKey(final int primaryCode, final boolean withSliding) {
+        LogUtils.shared().dLog(TAG, "LatinIME onReleaseKey");
         mKeyboardSwitcher.onReleaseKey(primaryCode, withSliding, getCurrentAutoCapsState(),
                 getCurrentRecapitalizeState());
     }
@@ -1676,6 +1722,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     // Hooks for hardware keyboard
     @Override
     public boolean onKeyDown(final int keyCode, final KeyEvent keyEvent) {
+        LogUtils.shared().dLog(TAG, "LatinIME onKeyDown");
         mSpecialKeyDetector.onKeyDown(keyEvent);
         if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
             return super.onKeyDown(keyCode, keyEvent);
@@ -1697,6 +1744,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
 
     @Override
     public boolean onKeyUp(final int keyCode, final KeyEvent keyEvent) {
+        LogUtils.shared().dLog(TAG, "LatinIME onKeyUp");
         mSpecialKeyDetector.onKeyUp(keyEvent);
         if (!ProductionFlags.IS_HARDWARE_KEYBOARD_SUPPORTED) {
             return super.onKeyUp(keyCode, keyEvent);
@@ -1852,7 +1900,7 @@ public class LatinIME extends InputMethodService implements KeyboardActionListen
     @Override
     protected void dump(final FileDescriptor fd, final PrintWriter fout, final String[] args) {
         super.dump(fd, fout, args);
-
+        LogUtils.shared().dLog(TAG, "LatinIME dump");
         final Printer p = new PrintWriterPrinter(fout);
         p.println("LatinIME state :");
         p.println("  VersionCode = " + ApplicationUtils.getVersionCode(this));

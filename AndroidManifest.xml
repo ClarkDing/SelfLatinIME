@@ -34,7 +34,8 @@
     <application android:label="@string/english_ime_name"
             android:icon="@drawable/ic_launcher_keyboard"
             android:supportsRtl="true"
-            android:allowBackup="true">
+            android:allowBackup="true"
+            android:name="com.ialway.inputmethod.ui.MainApp">
 
         <service android:name="LatinIME"
                 android:label="@string/english_ime_name"
